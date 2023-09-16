@@ -32,10 +32,10 @@ export const adminLogin = async (req, res) => {
     const { email, password } = req.body;
     const admin = await Admin.findOne({ email });
     console.log(admin);
-    if (!admin) res.status(400).json({ msg: "Admin does not exist" });
+    if (!admin) return res.status(500).json({ msg: "Admin does not exist" });
     const isPasswordMatch = await bcrypt.compare(password, admin.password);
     if (!isPasswordMatch)
-      res.status(400).json({ msg: "Invalid credentials ..." });
+      return res.status(500).json({ msg: "Invalid Admin credentials ..." });
 
     const adminToken = jwt.sign({ id: admin._id }, process.env.JWT_SECRET);
 

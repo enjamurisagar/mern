@@ -29,10 +29,14 @@ const productSchema = new mongoose.Schema(
     size: {
       type: Number,
     },
+    reviews: {
+      type: Array,
+      default: [],
+    },
   },
   { timestamps: true }
 );
 
-const Product = mongoose.model(productSchema);
+const Product = mongoose.model("products", productSchema);
 
 export default Product;

@@ -9,12 +9,16 @@ import path from "path";
 import morgan from "morgan";
 import { fileURLToPath } from "url";
 //routes import
-import userRoutes from "./routes/user.js";
 import authRoutes from "./routes/auth.js";
 import adminRoutes from "./routes/admin.js";
 
 //controllers
 import { register } from "./controllers/auth.js";
+import { createProduct } from "./controllers/product.js";
+
+//tokens
+import { verifyAdminToken } from "./middleware/admin.js";
+import Product from "./models/productModel.js";
 // CONFIGURATIONS
 const __filename = fileURLToPath(import.meta.url); //we include this only when we use type:"module" in package.json
 const __dirname = path.dirname(__filename); //we include this only when we use type:"module" in package.json
@@ -44,10 +48,15 @@ const storage = multer.diskStorage({
 const upload = multer({ storage });
 
 //routes with files
-app.post("/auth/register", upload.single("picture"), register);
+app.post(
+  "/products/new",
+  verifyAdminToken,
+  upload.single("picture"),
+  createProduct
+);
+// app.post("/auth/register", upload.single("picture"), register);
 
 //routes
-// app.use(userRoutes);
 app.use("/auth", authRoutes);
 app.use("/admin", adminRoutes);
 
@@ -65,13 +74,34 @@ mongoose
     console.log("COnnection  failed with mongodb => " + err.message)
   );
 
-app.get("/", (req, res) => {
-  res.json({
-    name: "Enjamuri Sagar",
-  });
-});
-app.get("/e", (req, res) => {
-  res.json({
-    name: " Another Enjamuri Sagar",
-  });
+// app.get("/", (req, res) => {
+//   res.json({
+//     name: "Enjamuri Sagar",
+//   });
+// });
+// app.get("/e", (req, res) => {
+//   res.json({
+//     name: " Another Enjamuri Sagar",
+//   });
+// });
+
+// app.post("/ssa", verifyAdminToken, async (req, res) => {
+//   try {
+//     res.json({
+//       msg: "Access Accepted",
+//     });
+//   } catch (error) {
+//     res.json({
+//       msg: "Access denied",
+//     });
+//   }
+// });
+
+app.get("/products", async (req, res) => {
+  try {
+    const products = await Product.find();
+    res.json(products);
+  } catch (error) {
+    res.status(400).json({ msg: error.message });
+  }
 });
