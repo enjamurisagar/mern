@@ -35,7 +35,15 @@ const userSchema = new mongoose.Schema(
     },
     orders: {
       type: Array,
+      default: ["productId", "productId", "productId", "productId"],
+    },
+    pending: {
+      type: Array,
       default: [],
+    },
+    ordersCount: {
+      type: Number,
+      default: 0,
     },
   },
   { timestamps: true }

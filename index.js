@@ -41,20 +41,21 @@ const storage = multer.diskStorage({
     cb(null, "public/assets");
   },
   filename: function (req, file, cb) {
+    // const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
     cb(null, file.originalname);
   },
 });
 
-const upload = multer({ storage });
+const upload = multer({ storage: storage });
 
 //routes with files
 app.post(
   "/products/new",
   verifyAdminToken,
-  upload.single("picture"),
+  upload.array("picture"),
   createProduct
 );
-// app.post("/auth/register", upload.single("picture"), register);
+app.post("/auth/register", upload.single("picture"), register);
 
 //routes
 app.use("/auth", authRoutes);
@@ -74,11 +75,11 @@ mongoose
     console.log("COnnection  failed with mongodb => " + err.message)
   );
 
-// app.get("/", (req, res) => {
-//   res.json({
-//     name: "Enjamuri Sagar",
-//   });
-// });
+app.get("/", (req, res) => {
+  res.json({
+    name: "Enjamuri Sagar",
+  });
+});
 // app.get("/e", (req, res) => {
 //   res.json({
 //     name: " Another Enjamuri Sagar",
@@ -96,12 +97,3 @@ mongoose
 //     });
 //   }
 // });
-
-app.get("/products", async (req, res) => {
-  try {
-    const products = await Product.find();
-    res.json(products);
-  } catch (error) {
-    res.status(400).json({ msg: error.message });
-  }
-});
