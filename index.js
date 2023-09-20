@@ -42,11 +42,11 @@ const storage = multer.diskStorage({
   },
   filename: function (req, file, cb) {
     // const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
-    cb(null, file.name);
+    cb(null, file.originalname);
   },
 });
 
-const upload = multer({ storage: storage });
+const upload = multer({ storage });
 
 //routes with files
 app.post(

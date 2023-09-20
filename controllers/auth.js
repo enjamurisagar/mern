@@ -18,6 +18,7 @@ export const register = async (req, res) => {
     });
     const savedUser = await newUser.save();
     res.status(201).json(savedUser);
+    console.log("successfully registered with email -> " + savedUser.email);
   } catch (error) {
     res.status(500).json({ msg: error.message });
   }
@@ -25,6 +26,7 @@ export const register = async (req, res) => {
 
 export const login = async (req, res) => {
   try {
+    console.log(req.body);
     const { email, password } = req.body;
     const user = await User.findOne({ email });
     if (!user) {
